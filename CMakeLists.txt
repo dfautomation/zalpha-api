@@ -54,7 +54,6 @@ add_library(zalpha_api ${zalpha_api_srcs})
 generate_export_header(zalpha_api EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/zalpha_api/zalpha_api_export.h)
 target_link_libraries(zalpha_api ${ZMQ_LIBRARIES})
 
-add_subdirectory(python)
 add_subdirectory(examples)
 
 

@@ -13,10 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__title__ = 'zalpha-api'
+__title__ = 'zalpha_api'
+__description__ = 'Zalpha API Client Library for Python'
 __version__ = '0.0.0'
-__license__ = 'Apache 2.0'
+__author__ = 'Patrick Chin'
+__email__ = 'patrickcjh@gmail.com'
+__license__ = 'Apache License 2.0'
 __copyright__ = 'Copyright 2017 DF Automation & Robotics Sdn. Bhd.'
+__uri__ = 'https://github.com/dfautomation/zalpha-api'
 
 from zalpha import Zalpha
 
