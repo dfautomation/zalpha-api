@@ -14,8 +14,21 @@
 # limitations under the License.
 #
 
+###########
+## Build ##
+###########
+
 add_executable(communication_test communication_test.cpp)
 target_link_libraries(communication_test zalpha_api)
 
 add_executable(demo_client demo_client.cpp)
 target_link_libraries(demo_client zalpha_api)
+
+
+#############
+## Install ##
+#############
+
+install(TARGETS communication_test demo_client DESTINATION bin/examples)
+
+install(DIRECTORY . DESTINATION examples FILES_MATCHING PATTERN "*.hpp" PATTERN "*.cpp")
