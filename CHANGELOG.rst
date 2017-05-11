@@ -2,8 +2,8 @@
 Changelog for zalpha-api
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2017-05-11)
+------------------
 * first public release
 * implement the following set of API commands:
 
