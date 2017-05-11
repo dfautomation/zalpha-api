@@ -55,6 +55,7 @@ generate_export_header(zalpha_api EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/z
 target_link_libraries(zalpha_api ${ZMQ_LIBRARIES})
 
 add_subdirectory(examples)
+add_subdirectory(doc)
 
 
 #############

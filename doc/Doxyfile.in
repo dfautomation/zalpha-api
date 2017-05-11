@@ -1,0 +1,19 @@
+PROJECT_NAME           = "zalpha-api"
+PROJECT_NUMBER         = @zalpha_api_VERSION@
+PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/zalpha_logo.png
+STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@
+INPUT                  = @doxy_main_page@ \
+                         @PROJECT_SOURCE_DIR@/include \
+                         @PROJECT_SOURCE_DIR@/src
+FILE_PATTERNS          = *.h \
+                         *.hpp \
+                         *.cpp
+RECURSIVE              = YES
+USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
+
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = zalpha_api_VERSION=@zalpha_api_VERSION@ \
+                         ZALPHA_API_EXPORT= \
+                         ZALPHA_API_NO_EXPORT= \
+                         __attribute__(x)= 

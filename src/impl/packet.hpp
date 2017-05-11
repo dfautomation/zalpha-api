@@ -23,9 +23,28 @@
 namespace zalpha_api
 {
 
+/**
+ * \brief The data structure packet used for communication between the API server and client.
+ *
+ * The packet used has a fixed length of 72 bytes.
+ *
+ * <table>
+ * <tr><th>Byte Offset</th><th>Size (bytes)</th><th>Description</th></tr>
+ * <tr><td>0 - 1</td><td>2</td><td>Command</td></tr>
+ * <tr><td>2 - 7</td><td>6</td><td>Reserved</td></tr>
+ * <tr><td>8 - 71</td><td>64</td><td>Data</td></tr>
+ * </table>
+ *
+ * All the integer and floating-point data types uses a little-endian (LE) machine format.
+ *
+ * Both request and reply will share the same data packet format.
+ */
 class ZALPHA_API_NO_EXPORT Packet
 {
 public:
+  /**
+   * \brief Command value definition.
+   */
   enum
   {
     /* General */
@@ -62,8 +81,8 @@ public:
   };
 
 public:
-  uint16_t command;
-  uint16_t reserved[3];
+  uint16_t command;  ///< Command type
+  uint16_t reserved[3];  ///< Reserved
   union
   {
     uint8_t u8[MAX_PAYLOAD];
@@ -76,7 +95,7 @@ public:
     int64_t s64[MAX_PAYLOAD / 8];
     float f[MAX_PAYLOAD / 4];
     double d[MAX_PAYLOAD / 8];
-  } data;
+  } data;  ///< Storage for data
 } __attribute__((__packed__));
 
 }  // namespace zalpha_api

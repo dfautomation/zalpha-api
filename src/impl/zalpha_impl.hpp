@@ -27,6 +27,9 @@ namespace zalpha_api
 
 class ZALPHA_API_NO_EXPORT Packet;
 
+/**
+ * \brief ZalphaImpl is an internal implementation class that provides access to %Zalpha API.
+ */
 class ZALPHA_API_NO_EXPORT ZalphaImpl
 {
 public:
