@@ -143,7 +143,7 @@ public:
 
   /**
    * \brief Read the version string of API server.
-   * @param version_info     The variable to store the version string
+   * @param version          The variable to store the version string
    * @return                 A boolean indicating whether the operation is successful
    */
   bool versionInfo(std::string& version);
