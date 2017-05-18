@@ -185,17 +185,24 @@ public:
    */
   bool getTargetSpeed(float& left_speed, float& right_speed);
   /**
-   * \brief Reset the encoder distance to zero.
+   * \brief Reset the encoder distance and raw encoder count to zero.
    * @return                 A boolean indicating whether the operation is successful
    */
   bool resetEncoder();
   /**
    * \brief Read the current encoder distance
-   * @param left_encoder     The variable to store the left encoder distance, specified in \f$m\f$
-   * @param right_encoder    The variable to store the right encoder distance, specified in \f$m\f$
+   * @param left_distance    The variable to store the left encoder distance, specified in \f$m\f$
+   * @param right_distance   The variable to store the right encoder distance, specified in \f$m\f$
    * @return                 A boolean indicating whether the operation is successful
    */
-  bool getEncoder(double& left_encoder, double& right_encoder);
+  bool getEncoder(double& left_distance, double& right_distance);
+  /**
+   * \brief Read the current raw encoder count
+   * @param left_count       The variable to store the left encoder count, specified in pulses
+   * @param right_count      The variable to store the right encoder count, specified in pulses
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool getRawEncoder(int64_t& left_count, int64_t& right_count);
   /**
    * \brief Read the safety flag
    * @param safety_flag      The variable to store the safety flag.
@@ -205,13 +212,22 @@ public:
   bool getSafetyFlag(uint8_t& safety_flag);
   /**
    * \brief Read the encoder distance and safety flag
-   * @param left_encoder     The variable to store the left encoder distance, specified in \f$m\f$
-   * @param right_encoder    The variable to store the right encoder distance, specified in \f$m\f$
+   * @param left_distance    The variable to store the left encoder distance, specified in \f$m\f$
+   * @param right_distance   The variable to store the right encoder distance, specified in \f$m\f$
    * @param safety_flag      The variable to store the safety flag.
    * @return                 A boolean indicating whether the operation is successful
    * @sa                     SafetyFlag
    */
-  bool getEncoderAndSafetyFlag(double& left_encoder, double& right_encoder, uint8_t& safety_flag);
+  bool getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag);
+  /**
+   * \brief Read the raw encoder count and safety flag
+   * @param left_count       The variable to store the left encoder count, specified in pulses
+   * @param right_count      The variable to store the right encoder count, specified in pulses
+   * @param safety_flag      The variable to store the safety flag.
+   * @return                 A boolean indicating whether the operation is successful
+   * @sa                     SafetyFlag
+   */
+  bool getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag);
   /**
    * \brief Read the battery percentage
    * @param battery_percentage   The variable to store the battery percentage. The value is in between 0 - 100%.

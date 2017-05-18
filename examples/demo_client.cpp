@@ -41,16 +41,18 @@ const char* info =
   "8. Rotate agv anticlockwise at 60 deg/s for 3 seconds and stop.\n"
   "9. Reset encoder to zero.\n"
   "10. Read encoder distance.\n"
-  "11. Read safety flag.\n"
-  "12. Read encoder distance and safety flag.\n"
-  "13. Read battery percentage.\n"
-  "14. Activate charging.\n"
-  "15. Read charging status.\n"
-  "16. Read inputs.\n"
-  "17. Set all outputs to HIGH.\n"
-  "18. Set all outputs to LOW.\n"
-  "19. Read outputs.\n"
-  "20. Exit.\n"
+  "11. Read encoder count.\n"
+  "12. Read safety flag.\n"
+  "13. Read encoder distance and safety flag.\n"
+  "14. Read encoder count and safety flag.\n"
+  "15. Read battery percentage.\n"
+  "16. Activate charging.\n"
+  "17. Read charging status.\n"
+  "18. Read inputs.\n"
+  "19. Set all outputs to HIGH.\n"
+  "20. Set all outputs to LOW.\n"
+  "21. Read outputs.\n"
+  "22. Exit.\n"
   "------";
 
 int getOption()
@@ -60,12 +62,12 @@ int getOption()
   do
   {
     option = -1;
-    std::cout << "Please enter an option (1-20): ";
+    std::cout << "Please enter an option (1-22): ";
     std::cin >> option;
     std::cin.clear();
     std::cin.ignore(10000, '\n');
   }
-  while (option < 1 || option > 20);
+  while (option < 1 || option > 22);
 
   std::cout << "------" << std::endl;
   return option;
@@ -169,6 +171,19 @@ void getEncoder(zalpha_api::Zalpha& agv)
   }
 }
 
+void getRawEncoder(zalpha_api::Zalpha& agv)
+{
+  int64_t left_count, right_count;
+  if (agv.getRawEncoder(left_count, right_count))
+  {
+    std::cout << "Encoder count: (" << left_count << ", " << right_count << ") pulses." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to read encoder count: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
 void printSafetyFlag(uint8_t safety_flag)
 {
   std::cout << "Safety flags:" << std::endl;
@@ -203,7 +218,22 @@ void getEncoderAndSafetyFlag(zalpha_api::Zalpha& agv)
   }
   else
   {
-    std::cerr << "Failed to read encoder and safety flag: " << agv.getErrorMessage() << std::endl;
+    std::cerr << "Failed to read encoder distance and safety flag: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void getRawEncoderAndSafetyFlag(zalpha_api::Zalpha& agv)
+{
+  int64_t left_count, right_count;
+  uint8_t safety_flag;
+  if (agv.getRawEncoderAndSafetyFlag(left_count, right_count, safety_flag))
+  {
+    std::cout << "Encoder count: (" << left_count << ", " << right_count << ") pulses." << std::endl;
+    printSafetyFlag(safety_flag);
+  }
+  else
+  {
+    std::cerr << "Failed to read encoder count and safety flag: " << agv.getErrorMessage() << std::endl;
   }
 }
 
@@ -345,30 +375,36 @@ void execute(zalpha_api::Zalpha& agv, int option)
     getEncoder(agv);
     break;
   case 11:
-    getSafetyFlag(agv);
+    getRawEncoder(agv);
     break;
   case 12:
-    getEncoderAndSafetyFlag(agv);
+    getSafetyFlag(agv);
     break;
   case 13:
-    getBattery(agv);
+    getEncoderAndSafetyFlag(agv);
     break;
   case 14:
-    setCharging(agv, true);
+    getRawEncoderAndSafetyFlag(agv);
     break;
   case 15:
-    getCharging(agv);
+    getBattery(agv);
     break;
   case 16:
-    getInputs(agv);
+    setCharging(agv, true);
     break;
   case 17:
-    setOutputs(agv, 0xff, 0xff);
+    getCharging(agv);
     break;
   case 18:
-    setOutputs(agv, 0x00, 0xff);
+    getInputs(agv);
     break;
   case 19:
+    setOutputs(agv, 0xff, 0xff);
+    break;
+  case 20:
+    setOutputs(agv, 0x00, 0xff);
+    break;
+  case 21:
     getOutputs(agv);
     break;
   }
@@ -396,7 +432,7 @@ int main(int argc, char** argv)
   while (true)
   {
     int option = getOption();
-    if (option == 20) break;
+    if (option == 22) break;
     execute(agv, option);
   }
 

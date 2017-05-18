@@ -137,15 +137,27 @@ bool ZalphaImpl::resetEncoder()
   return executeCommand(packet, Packet::RESET_ENCODER) && isResultOk(packet);
 }
 
-bool ZalphaImpl::getEncoder(double& left_encoder, double& right_encoder)
+bool ZalphaImpl::getEncoder(double& left_distance, double& right_distance)
 {
   Packet packet;
   if (!executeCommand(packet, Packet::GET_ENCODER))
   {
     return false;
   }
-  left_encoder = packet.data.d[0];
-  right_encoder = packet.data.d[1];
+  left_distance = packet.data.d[0];
+  right_distance = packet.data.d[1];
+  return true;
+}
+
+bool ZalphaImpl::getRawEncoder(int64_t& left_count, int64_t& right_count)
+{
+  Packet packet;
+  if (!executeCommand(packet, Packet::GET_RAW_ENCODER))
+  {
+    return false;
+  }
+  left_count = packet.data.s64[0];
+  right_count = packet.data.s64[1];
   return true;
 }
 
@@ -160,15 +172,28 @@ bool ZalphaImpl::getSafetyFlag(uint8_t& safety_flag)
   return true;
 }
 
-bool ZalphaImpl::getEncoderAndSafetyFlag(double& left_encoder, double& right_encoder, uint8_t& safety_flag)
+bool ZalphaImpl::getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag)
 {
   Packet packet;
   if (!executeCommand(packet, Packet::GET_ENCODER_AND_SAFETY_FLAG))
   {
     return false;
   }
-  left_encoder = packet.data.d[0];
-  right_encoder = packet.data.d[1];
+  left_distance = packet.data.d[0];
+  right_distance = packet.data.d[1];
+  safety_flag = packet.data.u8[16];
+  return true;
+}
+
+bool ZalphaImpl::getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag)
+{
+  Packet packet;
+  if (!executeCommand(packet, Packet::GET_RAW_ENCODER_AND_SAFETY_FLAG))
+  {
+    return false;
+  }
+  left_count = packet.data.s64[0];
+  right_count = packet.data.s64[1];
   safety_flag = packet.data.u8[16];
   return true;
 }

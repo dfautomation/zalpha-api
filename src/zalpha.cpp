@@ -93,9 +93,14 @@ bool Zalpha::resetEncoder()
   return pimpl_->resetEncoder();
 }
 
-bool Zalpha::getEncoder(double& left_encoder, double& right_encoder)
+bool Zalpha::getEncoder(double& left_distance, double& right_distance)
 {
-  return pimpl_->getEncoder(left_encoder, right_encoder);
+  return pimpl_->getEncoder(left_distance, right_distance);
+}
+
+bool Zalpha::getRawEncoder(int64_t& left_count, int64_t& right_count)
+{
+  return pimpl_->getRawEncoder(left_count, right_count);
 }
 
 bool Zalpha::getSafetyFlag(uint8_t& safety_flag)
@@ -103,9 +108,14 @@ bool Zalpha::getSafetyFlag(uint8_t& safety_flag)
   return pimpl_->getSafetyFlag(safety_flag);
 }
 
-bool Zalpha::getEncoderAndSafetyFlag(double& left_encoder, double& right_encoder, uint8_t& safety_flag)
+bool Zalpha::getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag)
 {
-  return pimpl_->getEncoderAndSafetyFlag(left_encoder, right_encoder, safety_flag);
+  return pimpl_->getEncoderAndSafetyFlag(left_distance, right_distance, safety_flag);
+}
+
+bool Zalpha::getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag)
+{
+  return pimpl_->getRawEncoderAndSafetyFlag(left_count, right_count, safety_flag);
 }
 
 bool Zalpha::getBattery(float& battery_percentage)
