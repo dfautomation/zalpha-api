@@ -40,28 +40,30 @@ This demo client can perform the following operations:
 8. Rotate agv anticlockwise at 60 deg/s for 3 seconds and stop.
 9. Reset encoder to zero.
 10. Read encoder distance.
-11. Read safety flag.
-12. Read encoder distance and safety flag.
-13. Read battery percentage.
-14. Activate charging.
-15. Read charging status.
-16. Read inputs.
-17. Set all outputs to HIGH.
-18. Set all outputs to LOW.
-19. Read outputs.
-20. Exit.
+11. Read encoder count.
+12. Read safety flag.
+13. Read encoder distance and safety flag.
+14. Read encoder count and safety flag.
+15. Read battery percentage.
+16. Activate charging.
+17. Read charging status.
+18. Read inputs.
+19. Set all outputs to HIGH.
+20. Set all outputs to LOW.
+21. Read outputs.
+22. Exit.
 ------"""
 
 
 def get_option():
     print(info)
     while True:
-        option = user_input('Please enter an option (1-20): ')
+        option = user_input('Please enter an option (1-22): ')
         try:
             option = int(option)
         except:
             pass
-        if isinstance(option, int) and option >= 1 and option <= 20:
+        if isinstance(option, int) and option >= 1 and option <= 22:
             break
     print('------')
     return option
@@ -137,6 +139,14 @@ def get_encoder(agv):
         print('Failed to read encoder distance: %s' % ex)
 
 
+def get_raw_encoder(agv):
+    try:
+        left_count, right_count = agv.get_raw_encoder()
+        print('Encoder count: (%s, %s) pulses.' % (left_count, right_count))
+    except Exception as ex:
+        print('Failed to read encoder count: %s' % ex)
+
+
 def print_safety_flag(safety_flag):
     print('Safety flags:')
     print(' - Bumper front: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_BUMPER_FRONT))
@@ -160,7 +170,16 @@ def get_encoder_and_safety_flag(agv):
         print('Encoder distance: (%s, %s) meters.' % (left_distance, right_distance))
         print_safety_flag(safety_flag)
     except Exception as ex:
-        print('Failed to read encoder and safety flag: %s' % ex)
+        print('Failed to read encoder distance and safety flag: %s' % ex)
+
+
+def get_raw_encoder_and_safety_flag(agv):
+    try:
+        left_count, right_count, safety_flag = agv.get_raw_encoder_and_safety_flag()
+        print('Encoder count: (%s, %s) pulses.' % (left_count, right_count))
+        print_safety_flag(safety_flag)
+    except Exception as ex:
+        print('Failed to read encoder count and safety flag: %s' % ex)
 
 
 def get_battery(agv):
@@ -259,30 +278,36 @@ def execute(agv, option):
         get_encoder(agv)
 
     elif option == 11:
-        get_safety_flag(agv)
+        get_raw_encoder(agv)
 
     elif option == 12:
-        get_encoder_and_safety_flag(agv)
+        get_safety_flag(agv)
 
     elif option == 13:
-        get_battery(agv)
+        get_encoder_and_safety_flag(agv)
 
     elif option == 14:
-        set_charging(agv, True)
+        get_raw_encoder_and_safety_flag(agv)
 
     elif option == 15:
-        get_charging(agv)
+        get_battery(agv)
 
     elif option == 16:
-        get_inputs(agv)
+        set_charging(agv, True)
 
     elif option == 17:
-        set_outputs(agv, 0xff, 0xff)
+        get_charging(agv)
 
     elif option == 18:
-        set_outputs(agv, 0x00, 0xff)
+        get_inputs(agv)
 
     elif option == 19:
+        set_outputs(agv, 0xff, 0xff)
+
+    elif option == 20:
+        set_outputs(agv, 0x00, 0xff)
+
+    elif option == 21:
         get_outputs(agv)
 
     user_input('\nPress enter to continue...')
@@ -303,7 +328,7 @@ if __name__ == '__main__':
 
     while True:
         option = get_option()
-        if option == 20:
+        if option == 22:
             break
         execute(agv, option)
 

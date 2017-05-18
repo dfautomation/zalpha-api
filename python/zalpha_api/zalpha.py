@@ -101,6 +101,11 @@ class Zalpha(object):
         reply = self.__execute_command(packet, Packet.GET_ENCODER)
         return (reply.d[0], reply.d[1])
 
+    def get_raw_encoder(self):
+        packet = Packet()
+        reply = self.__execute_command(packet, Packet.GET_RAW_ENCODER)
+        return (reply.s64[0], reply.s64[1])
+
     def get_safety_flag(self):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_SAFETY_FLAG)
@@ -110,6 +115,11 @@ class Zalpha(object):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_ENCODER_AND_SAFETY_FLAG)
         return (reply.d[0], reply.d[1], reply.u8[16])
+
+    def get_raw_encoder_and_safety_flag(self):
+        packet = Packet()
+        reply = self.__execute_command(packet, Packet.GET_RAW_ENCODER_AND_SAFETY_FLAG)
+        return (reply.s64[0], reply.s64[1], reply.u8[16])
 
     def get_battery(self):
         packet = Packet()
