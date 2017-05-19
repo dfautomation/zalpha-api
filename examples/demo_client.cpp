@@ -184,19 +184,24 @@ void getRawEncoder(zalpha_api::Zalpha& agv)
   }
 }
 
-void printSafetyFlag(uint8_t safety_flag)
+void printSafetyFlag(uint16_t safety_flag)
 {
-  std::cout << "Safety flags:" << std::endl;
+  std::cout << "Safety flags (Critical):" << std::endl;
   std::cout << " - Bumper front: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_BUMPER_FRONT) << std::endl;
   std::cout << " - Bumper rear: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_BUMPER_REAR) << std::endl;
   std::cout << " - Emergency button: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_EMERGENCY_BUTTON) << std::endl;
   std::cout << " - External input: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_EXTERNAL_INPUT) << std::endl;
   std::cout << " - Charger connected: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_CHARGER_CONNECTED) << std::endl;
+  std::cout << "Safety flags (Non-critical):" << std::endl;
+  std::cout << " - Laser far area blocked: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_LASER_FAR_BLOCKED) << std::endl;
+  std::cout << " - Laser middle area blocked: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_LASER_MIDDLE_BLOCKED) << std::endl;
+  std::cout << " - Laser near area blocked: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_LASER_NEAR_BLOCKED) << std::endl;
+  std::cout << " - Laser malfunction: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_LASER_MALFUNCTION) << std::endl;
 }
 
 void getSafetyFlag(zalpha_api::Zalpha& agv)
 {
-  uint8_t safety_flag;
+  uint16_t safety_flag;
   if (agv.getSafetyFlag(safety_flag))
   {
     printSafetyFlag(safety_flag);
@@ -210,7 +215,7 @@ void getSafetyFlag(zalpha_api::Zalpha& agv)
 void getEncoderAndSafetyFlag(zalpha_api::Zalpha& agv)
 {
   double left_distance, right_distance;
-  uint8_t safety_flag;
+  uint16_t safety_flag;
   if (agv.getEncoderAndSafetyFlag(left_distance, right_distance, safety_flag))
   {
     std::cout << "Encoder distance: (" << left_distance << ", " << right_distance << ") meters." << std::endl;
@@ -225,7 +230,7 @@ void getEncoderAndSafetyFlag(zalpha_api::Zalpha& agv)
 void getRawEncoderAndSafetyFlag(zalpha_api::Zalpha& agv)
 {
   int64_t left_count, right_count;
-  uint8_t safety_flag;
+  uint16_t safety_flag;
   if (agv.getRawEncoderAndSafetyFlag(left_count, right_count, safety_flag))
   {
     std::cout << "Encoder count: (" << left_count << ", " << right_count << ") pulses." << std::endl;

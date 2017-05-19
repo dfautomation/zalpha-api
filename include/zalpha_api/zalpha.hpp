@@ -64,11 +64,19 @@ public:
    *
    * Multiple safety flag can be triggered at the same time, and each flag occupies a single bit.
    *
+   * Bit 15-8 consist of non-critical safety flags (laser near/middle/far blocked & laser malfunction).
+   * These flags do not cause the agv to stop.
+   *
+   * Bit 7-0 consist of critical safety flags (bumper front/rear, emergency button, external input,
+   * charger connected). These flags will stop the agv movement.
+   *
    * <table>
    * <tr>
+   *   <th colspan="8">Bit 15-8</th><th>&nbsp;</th>
    *   <th colspan="8">Bit 7-0</th>
    * </tr>
    * <tr>
+   *   <td>x</td><td>x</td><td>x</td><td>x</td><td>LMF</td><td>LNB</td><td>LMB</td><td>LFB</td><td>&nbsp;</td>
    *   <td>x</td><td>x</td><td>CC</td><td>x</td><td>EI</td><td>EB</td><td>BR</td><td>BF</td>
    * </tr>
    * </table>
@@ -90,6 +98,10 @@ public:
     SF_EMERGENCY_BUTTON = 0x04,    ///< Emergency button is pressed
     SF_EXTERNAL_INPUT = 0x08,      ///< External safety input is triggered
     SF_CHARGER_CONNECTED = 0x20,   ///< Charger is plugged in manually
+    SF_LASER_FAR_BLOCKED = 0x0100,     ///< Far zone of laser is blocked
+    SF_LASER_MIDDLE_BLOCKED = 0x0200,  ///< Middle zone of laser is blocked
+    SF_LASER_NEAR_BLOCKED = 0x0400,    ///< Near zone of laser is blocked
+    SF_LASER_MALFUNCTION = 0x0800,     ///< Laser has malfunction
   };
 
   /**
@@ -209,7 +221,7 @@ public:
    * @return                 A boolean indicating whether the operation is successful
    * @sa                     SafetyFlag
    */
-  bool getSafetyFlag(uint8_t& safety_flag);
+  bool getSafetyFlag(uint16_t& safety_flag);
   /**
    * \brief Read the encoder distance and safety flag
    * @param left_distance    The variable to store the left encoder distance, specified in \f$m\f$
@@ -218,7 +230,7 @@ public:
    * @return                 A boolean indicating whether the operation is successful
    * @sa                     SafetyFlag
    */
-  bool getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag);
+  bool getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint16_t& safety_flag);
   /**
    * \brief Read the raw encoder count and safety flag
    * @param left_count       The variable to store the left encoder count, specified in pulses
@@ -227,7 +239,7 @@ public:
    * @return                 A boolean indicating whether the operation is successful
    * @sa                     SafetyFlag
    */
-  bool getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag);
+  bool getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint16_t& safety_flag);
   /**
    * \brief Read the battery percentage
    * @param battery_percentage   The variable to store the battery percentage. The value is in between 0 - 100%.

@@ -33,6 +33,10 @@ class Zalpha(object):
     SF_EMERGENCY_BUTTON = 0x04
     SF_EXTERNAL_INPUT = 0x08
     SF_CHARGER_CONNECTED = 0x20
+    SF_LASER_FAR_BLOCKED = 0x0100
+    SF_LASER_MIDDLE_BLOCKED = 0x0200
+    SF_LASER_NEAR_BLOCKED = 0x0400
+    SF_LASER_MALFUNCTION = 0x0800
 
     # Charging flags
     CH_AUTO_MANUAL = 0x01
@@ -109,17 +113,17 @@ class Zalpha(object):
     def get_safety_flag(self):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_SAFETY_FLAG)
-        return reply.u8[0]
+        return reply.u16[0]
 
     def get_encoder_and_safety_flag(self):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_ENCODER_AND_SAFETY_FLAG)
-        return (reply.d[0], reply.d[1], reply.u8[16])
+        return (reply.d[0], reply.d[1], reply.u16[8])
 
     def get_raw_encoder_and_safety_flag(self):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_RAW_ENCODER_AND_SAFETY_FLAG)
-        return (reply.s64[0], reply.s64[1], reply.u8[16])
+        return (reply.s64[0], reply.s64[1], reply.u16[8])
 
     def get_battery(self):
         packet = Packet()

@@ -148,12 +148,17 @@ def get_raw_encoder(agv):
 
 
 def print_safety_flag(safety_flag):
-    print('Safety flags:')
+    print('Safety flags (Critical):')
     print(' - Bumper front: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_BUMPER_FRONT))
     print(' - Bumper rear: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_BUMPER_REAR))
     print(' - Emergency button: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_EMERGENCY_BUTTON))
     print(' - External input: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_EXTERNAL_INPUT))
     print(' - Charger connected: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_CHARGER_CONNECTED))
+    print('Safety flags (Non-critical):')
+    print(' - Laser far area blocked: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_LASER_FAR_BLOCKED))
+    print(' - Laser middle area blocked: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_LASER_MIDDLE_BLOCKED))
+    print(' - Laser near area blocked: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_LASER_NEAR_BLOCKED))
+    print(' - Laser malfunction: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_LASER_MALFUNCTION))
 
 
 def get_safety_flag(agv):

@@ -103,17 +103,17 @@ bool Zalpha::getRawEncoder(int64_t& left_count, int64_t& right_count)
   return pimpl_->getRawEncoder(left_count, right_count);
 }
 
-bool Zalpha::getSafetyFlag(uint8_t& safety_flag)
+bool Zalpha::getSafetyFlag(uint16_t& safety_flag)
 {
   return pimpl_->getSafetyFlag(safety_flag);
 }
 
-bool Zalpha::getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag)
+bool Zalpha::getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint16_t& safety_flag)
 {
   return pimpl_->getEncoderAndSafetyFlag(left_distance, right_distance, safety_flag);
 }
 
-bool Zalpha::getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag)
+bool Zalpha::getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint16_t& safety_flag)
 {
   return pimpl_->getRawEncoderAndSafetyFlag(left_count, right_count, safety_flag);
 }

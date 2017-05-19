@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 
   // perform operation cycles
   double distance_left, distance_right;
-  uint8_t safety_flag;
+  uint16_t safety_flag;
   for (int i = 0; i < NUM_CYCLES; i++)
   {
     if (!agv.getEncoderAndSafetyFlag(distance_left, distance_right, safety_flag))

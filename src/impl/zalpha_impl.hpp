@@ -47,9 +47,9 @@ public:
   bool resetEncoder();
   bool getEncoder(double& left_distance, double& right_distance);
   bool getRawEncoder(int64_t& left_count, int64_t& right_count);
-  bool getSafetyFlag(uint8_t& safety_flag);
-  bool getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint8_t& safety_flag);
-  bool getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint8_t& safety_flag);
+  bool getSafetyFlag(uint16_t& safety_flag);
+  bool getEncoderAndSafetyFlag(double& left_distance, double& right_distance, uint16_t& safety_flag);
+  bool getRawEncoderAndSafetyFlag(int64_t& left_count, int64_t& right_count, uint16_t& safety_flag);
   bool getBattery(float& battery_percentage);
   bool setCharging(bool enable = true);
   bool getCharging(uint8_t& charging_state);
