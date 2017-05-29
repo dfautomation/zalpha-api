@@ -17,6 +17,10 @@ The zalpha-api depends on the ZeroMQ library, therefore the ZeroMQ library must 
 
 For Linux (Ubuntu, Debian), use apt-get to install ZeroMQ:
 
+    sudo apt-get install libzmq5
+
+or for an older version of Ubuntu (14.04), use:
+
     sudo apt-get install libzmq3
 
 For Linux (RHEL, centOS), use yum to install ZeroMQ:
@@ -30,7 +34,7 @@ For Windows, the installer can be downloaded from the ZeroMQ [website](http://ze
 
 The pre-built binaries is provided for Linux and can be downloaded on the [release](http://github.com/dfautomation/zalpha-api/releases) page.
 
-For other platforms, you may build the binary from the source tarball. You need to install [CMake](http://cmake.org) in order to build from source.
+For other platforms, you may build the binary from the source tarball. You need to install [CMake](http://cmake.org) and the [libzmq3-dev](https://packages.ubuntu.com/search?keywords=libzmq3-dev) library in order to build from source.
 
 Download the tarball from the [release](http://github.com/dfautomation/zalpha-api/releases) page or use the latest development code in the [master](http://github.com/dfautomation/zalpha-api/tarball/master) branch.
 
