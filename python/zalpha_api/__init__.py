@@ -15,7 +15,7 @@
 
 __title__ = 'zalpha_api'
 __description__ = 'Zalpha API Client Library for Python'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 __author__ = 'Patrick Chin'
 __email__ = 'patrickcjh@gmail.com'
 __license__ = 'Apache License 2.0'

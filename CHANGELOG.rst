@@ -2,8 +2,8 @@
 Changelog for zalpha-api
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2017-05-30)
+------------------
 * add the following set of API commands:
 
   - GET_RAW_ENCODER
