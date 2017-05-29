@@ -2,6 +2,15 @@
 Changelog for zalpha-api
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add the following set of API commands:
+
+  - GET_RAW_ENCODER
+  - GET_RAW_ENCODER_AND_SAFETY_FLAG
+
+* add laser activation states to the safety flags
+
 0.1.0 (2017-05-11)
 ------------------
 * first public release
