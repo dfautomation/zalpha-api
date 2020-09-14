@@ -68,7 +68,7 @@ public:
    * These flags do not cause the agv to stop.
    *
    * Bit 7-0 consist of critical safety flags (bumper front/rear, emergency button, external input,
-   * charger connected). These flags will stop the agv movement.
+   * motor fault, wheel slippage, and charger connected). These flags will stop the agv movement.
    *
    * <table>
    * <tr>
@@ -77,7 +77,7 @@ public:
    * </tr>
    * <tr>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>LMF</td><td>LNB</td><td>LMB</td><td>LFB</td><td>&nbsp;</td>
-   *   <td>x</td><td>x</td><td>CC</td><td>x</td><td>EI</td><td>EB</td><td>BR</td><td>BF</td>
+   *   <td>x</td><td>CC</td><td>WS</td><td>MF</td><td>EI</td><td>EB</td><td>BR</td><td>BF</td>
    * </tr>
    * </table>
    *
@@ -97,7 +97,9 @@ public:
     SF_BUMPER_REAR = 0x02,         ///< Rear bumper is triggered
     SF_EMERGENCY_BUTTON = 0x04,    ///< Emergency button is pressed
     SF_EXTERNAL_INPUT = 0x08,      ///< External safety input is triggered
-    SF_CHARGER_CONNECTED = 0x20,   ///< Charger is plugged in manually
+    SF_MOTOR_FAULT = 0x10,         ///< Motor fault is triggered
+    SF_WHEEL_SLIPPAGE = 0x20,      ///< Wheel slippage is detected
+    SF_CHARGER_CONNECTED = 0x40,   ///< Charger is plugged in manually
     SF_LASER_FAR_BLOCKED = 0x0100,     ///< Far zone of laser is blocked
     SF_LASER_MIDDLE_BLOCKED = 0x0200,  ///< Middle zone of laser is blocked
     SF_LASER_NEAR_BLOCKED = 0x0400,    ///< Near zone of laser is blocked
@@ -262,7 +264,7 @@ public:
   /**
    * \brief Read the digital inputs.
    *
-   * Currently only 8 inputs are active. The inputs (I0 - I7) are stored in the LSB (least significant byte).
+   * Currently only 16 inputs are active. The inputs (I0 - I15) are stored in the lower bits.
    *
    * Addtionally, the start and stop button are mapped to the two most significant bits.
    *
@@ -278,7 +280,7 @@ public:
    * <tr>
    *   <td>\f$\bar{Stop}\f$</td><td>\f$\bar{Start}\f$</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
-   *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
+   *   <td>I15</td><td>I14</td><td>I13</td><td>I12</td><td>I11</td><td>I10</td><td>I9</td><td>I8</td><td></td>
    *   <td>I7</td><td>I6</td><td>I5</td><td>I4</td><td>I3</td><td>I2</td><td>I1</td><td>I0</td>
    * </tr>
    * </table>
@@ -291,7 +293,7 @@ public:
   /**
    * \brief Set the digital outputs.
    *
-   * Currently only 8 outputs are active. The outputs (O0 - O7) are stored in the LSB (least significant byte).
+   * Currently only 16 outputs are active. The outputs (O0 - O15) are stored in the lower bits.
    *
    * The remaining bits are reserved and not in use.
    *
@@ -305,7 +307,7 @@ public:
    * <tr>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
-   *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
+   *   <td>O15</td><td>O14</td><td>O13</td><td>O12</td><td>O11</td><td>O10</td><td>O9</td><td>O8</td><td></td>
    *   <td>O7</td><td>O6</td><td>O5</td><td>O4</td><td>O3</td><td>O2</td><td>O1</td><td>O0</td>
    * </tr>
    * </table>
@@ -316,7 +318,7 @@ public:
   /**
    * \brief Read the digital outputs.
    *
-   * Currently only 8 outputs are active. The outputs (O0 - O7) are stored in the LSB (least significant byte).
+   * Currently only 16 outputs are active. The outputs (O0 - O15) are stored in the lower bits.
    *
    * The remaining bits are reserved and not in use.
    *
@@ -330,7 +332,7 @@ public:
    * <tr>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
    *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
-   *   <td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td>
+   *   <td>O15</td><td>O14</td><td>O13</td><td>O12</td><td>O11</td><td>O10</td><td>O9</td><td>O8</td><td></td>
    *   <td>O7</td><td>O6</td><td>O5</td><td>O4</td><td>O3</td><td>O2</td><td>O1</td><td>O0</td>
    * </tr>
    * </table>
