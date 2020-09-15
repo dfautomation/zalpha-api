@@ -2,6 +2,21 @@
 Changelog for zalpha-api
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.0 (2020-09-15)
+------------------
+* add the following set of API commands:
+
+  - MOVE_STRAIGHT
+  - MOVE_BEZIER
+  - ROTATE
+  - GET_ACTION_STATUS
+  - PAUSE_ACTION
+  - RESUME_ACTION
+  - STOP_ACTION
+
+* add motor fault and wheel slippage to the safety flags
+* increase the number of I/O pins supported from 8 to 16
+
 0.2.0 (2017-05-30)
 ------------------
 * add the following set of API commands:

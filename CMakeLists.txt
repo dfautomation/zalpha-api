@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(zalpha_api)
 
 set(zalpha_api_VERSION_MAJOR 0)
-set(zalpha_api_VERSION_MINOR 2)
+set(zalpha_api_VERSION_MINOR 3)
 set(zalpha_api_VERSION_PATCH 0)
 set(zalpha_api_VERSION "${zalpha_api_VERSION_MAJOR}.${zalpha_api_VERSION_MINOR}.${zalpha_api_VERSION_PATCH}")
 
