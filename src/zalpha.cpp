@@ -88,6 +88,41 @@ bool Zalpha::getTargetSpeed(float& left_speed, float& right_speed)
   return pimpl_->getTargetSpeed(left_speed, right_speed);
 }
 
+bool Zalpha::moveStraight(float speed, float distance, uint8_t laser_area)
+{
+  return pimpl_->moveStraight(speed, distance, laser_area);
+}
+
+bool Zalpha::moveBezier(float speed, float x, float y, float cp1_x, float cp1_y, float cp2_x, float cp2_y, uint8_t laser_area)
+{
+  return pimpl_->moveBezier(speed, x, y, cp1_x, cp1_y, cp2_x, cp2_y, laser_area);
+}
+
+bool Zalpha::rotate(float speed, float angle, uint8_t laser_area)
+{
+  return pimpl_->rotate(speed, angle, laser_area);
+}
+
+bool Zalpha::getActionStatus(uint8_t& status)
+{
+  return pimpl_->getActionStatus(status);
+}
+
+bool Zalpha::pauseAction()
+{
+  return pimpl_->pauseAction();
+}
+
+bool Zalpha::resumeAction()
+{
+  return pimpl_->resumeAction();
+}
+
+bool Zalpha::stopAction()
+{
+  return pimpl_->stopAction();
+}
+
 bool Zalpha::resetEncoder()
 {
   return pimpl_->resetEncoder();

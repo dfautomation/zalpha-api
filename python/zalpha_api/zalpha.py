@@ -27,6 +27,12 @@ class ZalphaError(RuntimeError):
 
 class Zalpha(object):
 
+    # Action status
+    AC_COMPLETED = 0x00
+    AC_IN_PROGRESS = 0x01
+    AC_PAUSED = 0x02
+    AC_SAFETY_TRIGGERED = 0x03
+
     # Safety flags
     SF_BUMPER_FRONT = 0x01
     SF_BUMPER_REAR = 0x02
@@ -46,7 +52,8 @@ class Zalpha(object):
     CH_BATTERY_FULL = 0x04
 
     # Error messages
-    MSG_RESULT_ERROR = 'Invalid parameters in API call.'
+    MSG_RESULT_ERROR_INVALID_COMMAND = 'Invalid parameters in API call.'
+    MSG_RESULT_ERROR_BUSY = 'Target is busy.'
     MSG_INVALID_REPLY = 'Invalid reply format.'
     MSG_UNKNOWN_ERROR = 'Unknown error.'
     MSG_CONNECTED = 'Already connected to API server.'
@@ -97,6 +104,49 @@ class Zalpha(object):
         packet = Packet()
         reply = self.__execute_command(packet, Packet.GET_TARGET_SPEED)
         return (reply.f[0], reply.f[1])
+
+    def move_straight(self, speed, distance, laser_area):
+        packet = Packet()
+        packet.f[0] = speed
+        packet.f[1] = distance
+        packet.u8[8] = laser_area
+        self.__check_result(self.__execute_command(packet, Packet.MOVE_STRAIGHT))
+
+    def move_bezier(self, speed, x, y, cp1_x, cp1_y, cp2_x, cp2_y, laser_area):
+        packet = Packet()
+        packet.f[0] = speed
+        packet.f[1] = x
+        packet.f[2] = y
+        packet.f[3] = cp1_x
+        packet.f[4] = cp1_y
+        packet.f[5] = cp2_x
+        packet.f[6] = cp2_y
+        packet.u8[28] = laser_area
+        self.__check_result(self.__execute_command(packet, Packet.MOVE_BEZIER))
+
+    def rotate(self, speed, angle, laser_area):
+        packet = Packet()
+        packet.f[0] = speed
+        packet.f[1] = angle
+        packet.u8[8] = laser_area
+        self.__check_result(self.__execute_command(packet, Packet.ROTATE))
+
+    def get_action_status(self):
+        packet = Packet()
+        reply = self.__execute_command(packet, Packet.GET_ACTION_STATUS)
+        return reply.u8[0]
+
+    def pause_action(self):
+        packet = Packet()
+        self.__check_result(self.__execute_command(packet, Packet.PAUSE_ACTION))
+
+    def resume_action(self):
+        packet = Packet()
+        self.__check_result(self.__execute_command(packet, Packet.RESUME_ACTION))
+
+    def stop_action(self):
+        packet = Packet()
+        self.__check_result(self.__execute_command(packet, Packet.STOP_ACTION))
 
     def reset_encoder(self):
         packet = Packet()
@@ -183,7 +233,9 @@ class Zalpha(object):
     def __check_result(self, packet):
         if packet.u16[0] == Packet.RESULT_OK:
             return
-        elif packet.u16[0] == Packet.RESULT_ERROR:
-            raise ZalphaError(self.MSG_RESULT_ERROR)
+        elif packet.u16[0] == Packet.RESULT_ERROR_INVALID_COMMAND:
+            raise ZalphaError(self.MSG_RESULT_ERROR_INVALID_COMMAND)
+        elif packet.u16[0] == Packet.RESULT_ERROR_BUSY:
+            raise ZalphaError(self.MSG_RESULT_ERROR_BUSY)
         else:
             raise ZalphaError(self.MSG_UNKNOWN_ERROR)

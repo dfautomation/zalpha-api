@@ -58,6 +58,19 @@ class ZALPHA_API_EXPORT Zalpha
 {
 public:
   /**
+   * \brief Action status
+   *
+   * This is the definition of the status code returned from the function getActionStatus().
+   */
+  enum ActionStatus
+  {
+    AC_COMPLETED = 0,          ///< Action has been completed
+    AC_IN_PROGRESS = 1,        ///< Action is in progress
+    AC_PAUSED = 2,             ///< Action is being paused
+    AC_SAFETY_TRIGGERED = 3,   ///< Action is blocked by a safety trigger
+  };
+
+  /**
    * \brief Safety flags
    *
    * The safety flags indicate what safety are being triggered on the %Zalpha AGV.
@@ -128,7 +141,7 @@ public:
    * bool use_auto_charger = !(bool)(charging_state & CH_AUTO_MANUAL);
    * ~~~
    *
-   * This representation is used in the results of the functions getCharging().
+   * This representation is used in the results of the function getCharging().
    */
   enum ChargingState
   {
@@ -198,6 +211,68 @@ public:
    * @return                 A boolean indicating whether the operation is successful
    */
   bool getTargetSpeed(float& left_speed, float& right_speed);
+  /**
+   * \brief Perform a straight movement.
+   * @param speed            The maximum speed, specified in \f$ms^{-1}\f$
+   * @param distance         The distance to move forward (+ve) or backward (-ve), specified in \f$m\f$
+   * @param laser_area       The ID of the laser area to set as the safety zone
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool moveStraight(float speed, float distance, uint8_t laser_area);
+  /**
+   * \brief Perform a bezier movement.
+   * @param speed            The maximum speed, specified in \f$ms^{-1}\f$
+   * @param x                The X coordinate of endpoint from current position, in \f$m\f$
+   * @param y                The Y coordinate of endpoint from current position, in \f$m\f$
+   * @param cp1_x            The X coordinate of control point 1 from current position, in \f$m\f$
+   * @param cp1_y            The Y coordinate of control point 1 from current position, in \f$m\f$
+   * @param cp2_x            The X coordinate of control point 2 from current position, in \f$m\f$
+   * @param cp2_y            The Y coordinate of control point 2 from current position, in \f$m\f$
+   * @param laser_area       The ID of the laser area to set as the safety zone
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool moveBezier(float speed, float x, float y, float cp1_x, float cp1_y, float cp2_x, float cp2_y, uint8_t laser_area);
+  /**
+   * \brief Perform a rotational movement.
+   * @param speed            The maximum rotational speed, specified in \f$rad/s\f$
+   * @param angle            The angle to rotate counter-clockwise (+ve) or clockwise (-ve), specified in \f$rad\f$
+   * @param laser_area       The ID of the laser area to set as the safety zone
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool rotate(float speed, float angle, uint8_t laser_area);
+  /**
+   * \brief Get the status of the current action.
+   *
+   * The action refers to the straight, bezier or rotational movement.
+   *
+   * @param status           The variable to store the status
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool getActionStatus(uint8_t& status);
+  /**
+   * \brief Pause the current action.
+   *
+   * The action refers to the straight, bezier or rotational movement.
+   *
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool pauseAction();
+  /**
+   * \brief Resume the current action.
+   *
+   * The action refers to the straight, bezier or rotational movement.
+   *
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool resumeAction();
+  /**
+   * \brief Abort the current action.
+   *
+   * The action refers to the straight, bezier or rotational movement.
+   *
+   * @return                 A boolean indicating whether the operation is successful
+   */
+  bool stopAction();
   /**
    * \brief Reset the encoder distance and raw encoder count to zero.
    * @return                 A boolean indicating whether the operation is successful

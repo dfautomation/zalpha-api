@@ -131,6 +131,67 @@ bool ZalphaImpl::getTargetSpeed(float& left_speed, float& right_speed)
   return true;
 }
 
+bool ZalphaImpl::moveStraight(float speed, float distance, uint8_t laser_area)
+{
+  Packet packet;
+  packet.data.f[0] = speed;
+  packet.data.f[1] = distance;
+  packet.data.u8[8] = laser_area;
+  return executeCommand(packet, Packet::MOVE_STRAIGHT) && isResultOk(packet);
+}
+
+bool ZalphaImpl::moveBezier(float speed, float x, float y, float cp1_x, float cp1_y, float cp2_x, float cp2_y, uint8_t laser_area)
+{
+  Packet packet;
+  packet.data.f[0] = speed;
+  packet.data.f[1] = x;
+  packet.data.f[2] = y;
+  packet.data.f[3] = cp1_x;
+  packet.data.f[4] = cp1_y;
+  packet.data.f[5] = cp2_x;
+  packet.data.f[6] = cp2_y;
+  packet.data.u8[28] = laser_area;
+  return executeCommand(packet, Packet::MOVE_BEZIER) && isResultOk(packet);
+}
+
+bool ZalphaImpl::rotate(float speed, float angle, uint8_t laser_area)
+{
+  Packet packet;
+  packet.data.f[0] = speed;
+  packet.data.f[1] = angle;
+  packet.data.u8[8] = laser_area;
+  return executeCommand(packet, Packet::ROTATE) && isResultOk(packet);
+}
+
+bool ZalphaImpl::getActionStatus(uint8_t& status)
+{
+  Packet packet;
+  if (!executeCommand(packet, Packet::GET_ACTION_STATUS))
+  {
+    return false;
+  }
+  status = packet.data.u8[0];
+  return true;
+}
+
+bool ZalphaImpl::pauseAction()
+{
+  Packet packet;
+  return executeCommand(packet, Packet::PAUSE_ACTION) && isResultOk(packet);
+}
+
+bool ZalphaImpl::resumeAction()
+{
+  Packet packet;
+  return executeCommand(packet, Packet::RESUME_ACTION) && isResultOk(packet);
+}
+
+bool ZalphaImpl::stopAction()
+{
+  Packet packet;
+  return executeCommand(packet, Packet::STOP_ACTION) && isResultOk(packet);
+}
+
 bool ZalphaImpl::resetEncoder()
 {
   Packet packet;
@@ -343,10 +404,15 @@ bool ZalphaImpl::isResultOk(const Packet& packet)
   {
     return true;
   }
-  else if (packet.data.u16[0] == Packet::RESULT_ERROR)
+  else if (packet.data.u16[0] == Packet::RESULT_ERROR_INVALID_COMMAND)
   {
-    errnum_ = Packet::RESULT_ERROR;
+    errnum_ = Packet::RESULT_ERROR_INVALID_COMMAND;
     errmsg_ = "Invalid parameters in API call.";
+  }
+  else if (packet.data.u16[0] == Packet::RESULT_ERROR_BUSY)
+  {
+    errnum_ = Packet::RESULT_ERROR_BUSY;
+    errmsg_ = "Target is busy.";
   }
   else
   {

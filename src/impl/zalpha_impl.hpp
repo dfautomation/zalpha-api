@@ -44,6 +44,13 @@ public:
   bool getAcceleration(float& acceleration, float& deceleration);
   bool setTargetSpeed(float left_speed, float right_speed);
   bool getTargetSpeed(float& left_speed, float& right_speed);
+  bool moveStraight(float speed, float distance, uint8_t laser_area);
+  bool moveBezier(float speed, float x, float y, float cp1_x, float cp1_y, float cp2_x, float cp2_y, uint8_t laser_area);
+  bool rotate(float speed, float angle, uint8_t laser_area);
+  bool getActionStatus(uint8_t& status);
+  bool pauseAction();
+  bool resumeAction();
+  bool stopAction();
   bool resetEncoder();
   bool getEncoder(double& left_distance, double& right_distance);
   bool getRawEncoder(int64_t& left_count, int64_t& right_count);
