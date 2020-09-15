@@ -38,32 +38,44 @@ This demo client can perform the following operations:
 6. Move agv backward at 0.3 m/s for 3 seconds and stop.
 7. Rotate agv clockwise at 90 deg/s for 3 seconds and stop.
 8. Rotate agv anticlockwise at 60 deg/s for 3 seconds and stop.
-9. Reset encoder to zero.
-10. Read encoder distance.
-11. Read encoder count.
-12. Read safety flag.
-13. Read encoder distance and safety flag.
-14. Read encoder count and safety flag.
-15. Read battery percentage.
-16. Activate charging.
-17. Read charging status.
-18. Read inputs.
-19. Set all outputs to HIGH.
-20. Set all outputs to LOW.
-21. Read outputs.
-22. Exit.
+9. Forward agv in a straight movement to reach 2 m.
+10. Reverse agv in a straight movement to reach -1.5 m.
+11. Forward agv in a bezier movement to reach 2 m (front) and -1 m (right).
+12. Reverse agv in a bezier movement to reach -2 m (rear) and 1 m (left).
+13. Rotate agv clockwise for 90 deg.
+14. Rotate agv anticlockwise for 180 deg.
+15. Get action status.
+16. Pause action.
+17. Resume action.
+18. Stop action.
+19. Reset encoder to zero.
+20. Read encoder distance.
+21. Read encoder count.
+22. Read safety flag.
+23. Read encoder distance and safety flag.
+24. Read encoder count and safety flag.
+25. Read battery percentage.
+26. Activate charging.
+27. Read charging status.
+28. Read inputs.
+29. Set all outputs to HIGH.
+30. Set all outputs to LOW.
+31. Read outputs.
+32. Exit.
 ------"""
+
+option_count = 32
 
 
 def get_option():
     print(info)
     while True:
-        option = user_input('Please enter an option (1-22): ')
+        option = user_input('Please enter an option (1-32): ')
         try:
             option = int(option)
         except:
             pass
-        if isinstance(option, int) and option >= 1 and option <= 22:
+        if isinstance(option, int) and option >= 1 and option <= option_count:
             break
     print('------')
     return option
@@ -123,6 +135,71 @@ def set_speed(agv, left_speed, right_speed, duration):
         print('Failed to stop AGV: %s' % ex)
 
 
+def move_straight(agv, speed, distance, laser_area):
+    try:
+        agv.move_straight(speed, distance, laser_area)
+        print('Successfully start move_straight action.')
+    except Exception as ex:
+        print('Failed to start move_straight action: %s' % ex)
+
+
+def move_bezier(agv, speed, x, y, cp1_x, cp1_y, cp2_x, cp2_y, laser_area):
+    try:
+        agv.move_bezier(speed, x, y, cp1_x, cp1_y, cp2_x, cp2_y, laser_area)
+        print('Successfully start move_bezier action.')
+    except Exception as ex:
+        print('Failed to start move_bezier action: %s' % ex)
+
+
+def rotate(agv, speed, angle, laser_area):
+    try:
+        agv.rotate(speed, angle, laser_area)
+        print('Successfully start rotate action.')
+    except Exception as ex:
+        print('Failed to start rotate action: %s' % ex)
+
+
+def get_action_status(agv):
+    try:
+        status = agv.get_action_status()
+        if status == agv.AC_COMPLETED:
+            print('Action status: Completed')
+        elif status == agv.AC_IN_PROGRESS:
+            print('Action status: In progress')
+        elif status == agv.AC_PAUSED:
+            print('Action status: Paused')
+        elif status == agv.AC_SAFETY_TRIGGERED:
+            print('Action status: Safety triggered')
+        else:
+            print('Action status: Unknown')
+    except Exception as ex:
+        print('Failed to get action status: %s' % ex)
+
+
+def pause_action(agv):
+    try:
+        agv.pause_action()
+        print('Successfully pause action.')
+    except Exception as ex:
+        print('Failed to pause action: %s' % ex)
+
+
+def resume_action(agv):
+    try:
+        agv.resume_action()
+        print('Successfully resume action.')
+    except Exception as ex:
+        print('Failed to resume action: %s' % ex)
+
+
+def stop_action(agv):
+    try:
+        agv.stop_action()
+        print('Successfully stop action.')
+    except Exception as ex:
+        print('Failed to stop action: %s' % ex)
+
+
 def reset_encoder(agv):
     try:
         agv.reset_encoder()
@@ -153,6 +230,8 @@ def print_safety_flag(safety_flag):
     print(' - Bumper rear: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_BUMPER_REAR))
     print(' - Emergency button: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_EMERGENCY_BUTTON))
     print(' - External input: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_EXTERNAL_INPUT))
+    print(' - Motor fault: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_MOTOR_FAULT))
+    print(' - Wheel slippage: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_WHEEL_SLIPPAGE))
     print(' - Charger connected: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_CHARGER_CONNECTED))
     print('Safety flags (Non-critical):')
     print(' - Laser far area blocked: %s' % bool(safety_flag & zalpha_api.Zalpha.SF_LASER_FAR_BLOCKED))
@@ -277,42 +356,82 @@ def execute(agv, option):
         set_speed(agv, -linear_speed, linear_speed, 3)
 
     elif option == 9:
-        reset_encoder(agv)
+        distance = 2.0
+        move_straight(agv, 0.6, distance, 1)
 
     elif option == 10:
-        get_encoder(agv)
+        distance = -1.5
+        move_straight(agv, 0.6, distance, 1)
 
     elif option == 11:
-        get_raw_encoder(agv)
+        end = (2, -1)
+        cp1 = (1, 0)
+        cp2 = (1, -1)
+        move_bezier(agv, 0.4, end[0], end[1], cp1[0], cp1[1], cp2[0], cp2[1], 1)
 
     elif option == 12:
-        get_safety_flag(agv)
+        end = (-2, 1)
+        cp1 = (-1, 0)
+        cp2 = (-1, 1)
+        move_bezier(agv, 0.4, end[0], end[1], cp1[0], cp1[1], cp2[0], cp2[1], 1)
 
     elif option == 13:
-        get_encoder_and_safety_flag(agv)
+        angle = -90.0 / 180.0 * 3.14159
+        rotate(agv, 0.4, angle, 1)
 
     elif option == 14:
-        get_raw_encoder_and_safety_flag(agv)
+        angle = 180.0 / 180.0 * 3.14159
+        rotate(agv, 0.4, angle, 1)
 
     elif option == 15:
-        get_battery(agv)
+        get_action_status(agv)
 
     elif option == 16:
-        set_charging(agv, True)
+        pause_action(agv)
 
     elif option == 17:
-        get_charging(agv)
+        resume_action(agv)
 
     elif option == 18:
-        get_inputs(agv)
+        stop_action(agv)
 
     elif option == 19:
-        set_outputs(agv, 0xff, 0xff)
+        reset_encoder(agv)
 
     elif option == 20:
-        set_outputs(agv, 0x00, 0xff)
+        get_encoder(agv)
 
     elif option == 21:
+        get_raw_encoder(agv)
+
+    elif option == 22:
+        get_safety_flag(agv)
+
+    elif option == 23:
+        get_encoder_and_safety_flag(agv)
+
+    elif option == 24:
+        get_raw_encoder_and_safety_flag(agv)
+
+    elif option == 25:
+        get_battery(agv)
+
+    elif option == 26:
+        set_charging(agv, True)
+
+    elif option == 27:
+        get_charging(agv)
+
+    elif option == 28:
+        get_inputs(agv)
+
+    elif option == 29:
+        set_outputs(agv, 0xffff, 0xffff)
+
+    elif option == 30:
+        set_outputs(agv, 0x0000, 0xffff)
+
+    elif option == 31:
         get_outputs(agv)
 
     user_input('\nPress enter to continue...')
@@ -333,7 +452,7 @@ if __name__ == '__main__':
 
     while True:
         option = get_option()
-        if option == 22:
+        if option == option_count:
             break
         execute(agv, option)
 

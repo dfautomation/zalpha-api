@@ -39,21 +39,33 @@ const char* info =
   "6. Move agv backward at 0.3 m/s for 3 seconds and stop.\n"
   "7. Rotate agv clockwise at 90 deg/s for 3 seconds and stop.\n"
   "8. Rotate agv anticlockwise at 60 deg/s for 3 seconds and stop.\n"
-  "9. Reset encoder to zero.\n"
-  "10. Read encoder distance.\n"
-  "11. Read encoder count.\n"
-  "12. Read safety flag.\n"
-  "13. Read encoder distance and safety flag.\n"
-  "14. Read encoder count and safety flag.\n"
-  "15. Read battery percentage.\n"
-  "16. Activate charging.\n"
-  "17. Read charging status.\n"
-  "18. Read inputs.\n"
-  "19. Set all outputs to HIGH.\n"
-  "20. Set all outputs to LOW.\n"
-  "21. Read outputs.\n"
-  "22. Exit.\n"
+  "9. Forward agv in a straight movement to reach 2 m.\n"
+  "10. Reverse agv in a straight movement to reach -1.5 m.\n"
+  "11. Forward agv in a bezier movement to reach 2 m (front) and -1 m (right).\n"
+  "12. Reverse agv in a bezier movement to reach -2 m (rear) and 1 m (left).\n"
+  "13. Rotate agv clockwise for 90 deg.\n"
+  "14. Rotate agv anticlockwise for 180 deg.\n"
+  "15. Get action status.\n"
+  "16. Pause action.\n"
+  "17. Resume action.\n"
+  "18. Stop action.\n"
+  "19. Reset encoder to zero.\n"
+  "20. Read encoder distance.\n"
+  "21. Read encoder count.\n"
+  "22. Read safety flag.\n"
+  "23. Read encoder distance and safety flag.\n"
+  "24. Read encoder count and safety flag.\n"
+  "25. Read battery percentage.\n"
+  "26. Activate charging.\n"
+  "27. Read charging status.\n"
+  "28. Read inputs.\n"
+  "29. Set all outputs to HIGH.\n"
+  "30. Set all outputs to LOW.\n"
+  "31. Read outputs.\n"
+  "32. Exit.\n"
   "------";
+
+const int option_count = 32;
 
 int getOption()
 {
@@ -62,12 +74,12 @@ int getOption()
   do
   {
     option = -1;
-    std::cout << "Please enter an option (1-22): ";
+    std::cout << "Please enter an option (1-32): ";
     std::cin >> option;
     std::cin.clear();
     std::cin.ignore(10000, '\n');
   }
-  while (option < 1 || option > 22);
+  while (option < 1 || option > option_count);
 
   std::cout << "------" << std::endl;
   return option;
@@ -146,6 +158,110 @@ void setSpeed(zalpha_api::Zalpha& agv, float left_speed, float right_speed, int 
   }
 }
 
+void moveStraight(zalpha_api::Zalpha& agv, float speed, float distance, uint8_t laser_area)
+{
+  if (agv.moveStraight(speed, distance, laser_area))
+  {
+    std::cout << "Successfully start move_straight action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to start move_straight action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void moveBezier(zalpha_api::Zalpha& agv, float speed, float x, float y, float cp1_x, float cp1_y, float cp2_x, float cp2_y, uint8_t laser_area)
+{
+  if (agv.moveBezier(speed, x, y, cp1_x, cp1_y, cp2_x, cp2_y, laser_area))
+  {
+    std::cout << "Successfully start move_bezier action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to start move_bezier action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void rotate(zalpha_api::Zalpha& agv, float speed, float angle, uint8_t laser_area)
+{
+  if (agv.rotate(speed, angle, laser_area))
+  {
+    std::cout << "Successfully start rotate action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to start rotate action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void getActionStatus(zalpha_api::Zalpha& agv)
+{
+  uint8_t status;
+  if (agv.getActionStatus(status))
+  {
+    if (status == agv.AC_COMPLETED)
+    {
+      std::cout << "Action status: Completed" << std::endl;
+    }
+    else if (status == agv.AC_IN_PROGRESS)
+    {
+      std::cout << "Action status: In progress" << std::endl;
+    }
+    else if (status == agv.AC_PAUSED)
+    {
+      std::cout << "Action status: Paused" << std::endl;
+    }
+    else if (status == agv.AC_SAFETY_TRIGGERED)
+    {
+      std::cout << "Action status: Safety triggered" << std::endl;
+    }
+    else
+    {
+      std::cout << "Action status: Unknown" << std::endl;
+    }
+  }
+  else
+  {
+    std::cerr << "Failed to get action status: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void pauseAction(zalpha_api::Zalpha& agv)
+{
+  if (agv.pauseAction())
+  {
+    std::cout << "Successfully pause action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to pause action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void resumeAction(zalpha_api::Zalpha& agv)
+{
+  if (agv.resumeAction())
+  {
+    std::cout << "Successfully resume action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to resume action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
+void stopAction(zalpha_api::Zalpha& agv)
+{
+  if (agv.stopAction())
+  {
+    std::cout << "Successfully stop action." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Failed to stop action: " << agv.getErrorMessage() << std::endl;
+  }
+}
+
 void resetEncoder(zalpha_api::Zalpha& agv)
 {
   if (agv.resetEncoder())
@@ -191,6 +307,8 @@ void printSafetyFlag(uint16_t safety_flag)
   std::cout << " - Bumper rear: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_BUMPER_REAR) << std::endl;
   std::cout << " - Emergency button: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_EMERGENCY_BUTTON) << std::endl;
   std::cout << " - External input: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_EXTERNAL_INPUT) << std::endl;
+  std::cout << " - Motor fault: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_MOTOR_FAULT) << std::endl;
+  std::cout << " - Wheel slippage: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_WHEEL_SLIPPAGE) << std::endl;
   std::cout << " - Charger connected: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_CHARGER_CONNECTED) << std::endl;
   std::cout << "Safety flags (Non-critical):" << std::endl;
   std::cout << " - Laser far area blocked: " << (bool)(safety_flag & zalpha_api::Zalpha::SF_LASER_FAR_BLOCKED) << std::endl;
@@ -374,42 +492,94 @@ void execute(zalpha_api::Zalpha& agv, int option)
     break;
   }
   case 9:
-    resetEncoder(agv);
+  {
+    float distance = 2.0f;
+    moveStraight(agv, 0.6f, distance, 1);
     break;
+  }
   case 10:
-    getEncoder(agv);
+  {
+    float distance = -1.5f;
+    moveStraight(agv, 0.6f, distance, 1);
     break;
+  }
   case 11:
-    getRawEncoder(agv);
+  {
+    float end_x = 2.0f, end_y = -1.0f;
+    float cp1_x = 1.0f, cp1_y = 0.0f;
+    float cp2_x = 1.0f, cp2_y = -1.0f;
+    moveBezier(agv, 0.4, end_x, end_y, cp1_x, cp1_y, cp2_x, cp2_y, 1);
     break;
+  }
   case 12:
-    getSafetyFlag(agv);
+  {
+    float end_x = -2.0f, end_y = 1.0f;
+    float cp1_x = -1.0f, cp1_y = 0.0f;
+    float cp2_x = -1.0f, cp2_y = 1.0f;
+    moveBezier(agv, 0.4, end_x, end_y, cp1_x, cp1_y, cp2_x, cp2_y, 1);
     break;
+  }
   case 13:
-    getEncoderAndSafetyFlag(agv);
+  {
+    float angle = -90 / 180.0 * 3.14159;
+    rotate(agv, 0.4, angle, 1);
     break;
+  }
   case 14:
-    getRawEncoderAndSafetyFlag(agv);
+  {
+    float angle = 180 / 180.0 * 3.14159;
+    rotate(agv, 0.4, angle, 1);
     break;
+  }
   case 15:
-    getBattery(agv);
+    getActionStatus(agv);
     break;
   case 16:
-    setCharging(agv, true);
+    pauseAction(agv);
     break;
   case 17:
-    getCharging(agv);
+    resumeAction(agv);
     break;
   case 18:
-    getInputs(agv);
+    stopAction(agv);
     break;
   case 19:
-    setOutputs(agv, 0xff, 0xff);
+    resetEncoder(agv);
     break;
   case 20:
-    setOutputs(agv, 0x00, 0xff);
+    getEncoder(agv);
     break;
   case 21:
+    getRawEncoder(agv);
+    break;
+  case 22:
+    getSafetyFlag(agv);
+    break;
+  case 23:
+    getEncoderAndSafetyFlag(agv);
+    break;
+  case 24:
+    getRawEncoderAndSafetyFlag(agv);
+    break;
+  case 25:
+    getBattery(agv);
+    break;
+  case 26:
+    setCharging(agv, true);
+    break;
+  case 27:
+    getCharging(agv);
+    break;
+  case 28:
+    getInputs(agv);
+    break;
+  case 29:
+    setOutputs(agv, 0xffff, 0xffff);
+    break;
+  case 30:
+    setOutputs(agv, 0x0000, 0xffff);
+    break;
+  case 31:
     getOutputs(agv);
     break;
   }
@@ -437,7 +607,7 @@ int main(int argc, char** argv)
   while (true)
   {
     int option = getOption();
-    if (option == 22) break;
+    if (option == option_count) break;
     execute(agv, option);
   }
 
